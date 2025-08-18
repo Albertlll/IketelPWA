@@ -19,7 +19,7 @@ class SocketService {
 	public connect() : Promise<string> {
     if (!this.socket) {
       this.socket =io({
-				path: "/sio",
+				path: "https://iketel.ru/sio",
 				autoConnect: false,
 				withCredentials: true,
 				transports: ["websocket"],

@@ -1,6 +1,6 @@
 import axios from "axios";
 const httpConfig = axios.create({
-	baseURL: "/api/",
+	baseURL: "https://iketel.ru/api/",
 	withCredentials: true,
 	headers: {
 		"Content-Type": "application/json",

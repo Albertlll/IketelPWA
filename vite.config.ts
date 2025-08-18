@@ -18,28 +18,33 @@ export default defineConfig({
     manifest : manifest
   })],
 
-  	resolve: {
+  resolve: {
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
 		},
 	},
 
+	server: {
+    host: "0.0.0.0", 
+    port: 3100
+  }
 
-  server: {
-		host: "0.0.0.0", 
-		port: 3100, 
-		allowedHosts: ["iketel.ru", "iketel.game.ru"],
-		proxy: {
-			"/api": {
-				target: "https://iketel.ru",
-				changeOrigin: true,
-				rewrite: (path) => path.replace(/^\/api/, ""),
-			},
-			"/sio": {
-				target: "https://iketel.ru",
-				changeOrigin: true,
-				ws: true,
-			},
-		},
-	},
+
+  // server: {
+	// 	host: "0.0.0.0", 
+	// 	port: 3100, 
+	// 	allowedHosts: ["iketel.ru", "iketel.game.ru"],
+	// 	proxy: {
+	// 		"/api": {
+	// 			target: "https://iketel.ru",
+	// 			changeOrigin: true,
+	// 			rewrite: (path) => path.replace(/^\/api/, ""),
+	// 		},
+	// 		"/sio": {
+	// 			target: "https://iketel.ru",
+	// 			changeOrigin: true,
+	// 			ws: true,
+	// 		},
+	// 	},
+	// },
 })
