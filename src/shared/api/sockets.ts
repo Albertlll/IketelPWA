@@ -18,8 +18,9 @@ class SocketService {
 
 	public connect() : Promise<string> {
     if (!this.socket) {
-      this.socket =io({
-				path: "https://iketel.ru/sio",
+      console.log("Попытка подрубиться к сокету")
+      this.socket =io("https://iketel.ru", {
+				path: "/sio",
 				autoConnect: false,
 				withCredentials: true,
 				transports: ["websocket"],
