@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Yandex Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: cr.yandex
+          username: oauth
+          password: ${{ secrets.YANDEX_CLOUD_KEY }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.REGISTRY_URL }} .
+          
+      - name: Push Docker image to Yandex Container Registry
+        run: |
+          docker push ${{ secrets.REGISTRY_URL }}
+
+      - name: Create SSH key file
+        run: |
+          echo "${{ secrets.SERVER_SSH_KEY }}" > server_key.pem
+          chmod 600 server_key.pem
+
+      - name: SSH into server and deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no -i server_key.pem root@${{ secrets.SERVER_IP }} "cd /home && \
+            docker-compose pull && \
+            docker-compose down && \
+            docker-compose up -d && \
+            docker system prune -f"
+
+        
+
+
+
+
+
+
