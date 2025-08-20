@@ -36,7 +36,8 @@ export type QuizTask = {
 
 export type SentenceTask = {
   type: "sentence";
-  words: string[];
+  words: {word : string, id : string}[];
+
 } & BaseTask;
 
 export type Task = QuizTask | SentenceTask;

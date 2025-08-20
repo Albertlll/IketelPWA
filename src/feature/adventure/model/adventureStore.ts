@@ -1,6 +1,6 @@
 import SocketService from '@/shared/api/sockets';
 import { create } from 'zustand'
-import type { Task } from '../types/types';
+import type { QuizTask, RawTask, SentenceTask, Task } from '../types/types';
 
 interface AdventureState {
   joinCode: string;
@@ -15,14 +15,12 @@ interface AdventureState {
   setConnected: (value: boolean) => void;
   setError: (error: string | null) => void;
   setSteps: (steps: Task[]) => void;
-  sendAnswer: (answer: number | string) => void;
+  sendAnswer: (answer: number | string[]) => void;
 
   tasks: Task[] | null;
   currentTaskNumber: number;
   currentTask: Task | null;
 }
-
-
 
 
 
@@ -52,7 +50,7 @@ export const useAdventureStore = create<AdventureState>((set, get) => ({
     });
   },
 
-  sendAnswer: (answer: number | string) => {
+  sendAnswer: (answer: number | string[]) => {
     const tasks = get().tasks;
     if (tasks === null) return;
 

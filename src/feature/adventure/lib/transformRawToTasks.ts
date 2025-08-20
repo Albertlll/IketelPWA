@@ -20,7 +20,7 @@ export function transformRawToTasks(raw: RawTask[]): Task[] {
         id: item.step_id.toString(),
         stepNumber: item.step_number,
         type: "sentence",
-        words: item.words,
+        words: item.words.map((wrd, ind) => ({word : wrd, id :  `${item.step_id.toString()}-${ind}` })),
       };
     }
 
