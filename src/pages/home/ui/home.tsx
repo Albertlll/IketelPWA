@@ -1,25 +1,13 @@
 import { useRoom } from "@/feature/enterToRoom/hooks/useRoom";
-import httpConfig from "@/shared/api/httpClient";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import Loader from "@/shared/ui/loader/loader";
 
-// import {QrCode} from "lucide-react"
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 
 
 function HomePage() {
-  console.log("mvkdmfvmdlfm")
-
-  useEffect(() => {
-
-    console.log("mvkdmfvmdlfm")
-    httpConfig.get("/").then((resp) => {
-      console.log(resp)
-    }
-    )
-  }, [])
   const navigate = useNavigate()
   const location = useLocation();
   const scannedCode = location.state ? location.state.scannedCode[0].rawValue : "";
