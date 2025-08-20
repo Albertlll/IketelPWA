@@ -10,12 +10,11 @@ import { useLocation, useNavigate } from "react-router";
 function HomePage() {
   const navigate = useNavigate()
   const location = useLocation();
-  const scannedCode = location.state ? location.state.scannedCode[0].rawValue : "";
-  console.log(scannedCode)
+  const scannedCode = location.state ? location.state.scannedCode : "";
 
   const [isEnterLoading, setIsEnterLoading] = useState<boolean>(false);
 
-  const [roomCode, setRoomCode] = useState<string>("");
+  const [roomCode, setRoomCode] = useState<string>(scannedCode);
   const [username, setUsername] = useState<string>("");
 
 
@@ -39,7 +38,7 @@ function HomePage() {
       <div className=" w-full flex-1 flex flex-col gap-2 px-10">
 
         <div className=" flex flex-row gap-2">
-          <Input onChange={(e) => { setRoomCode(e.target.value) }} placeholder="Введите код комнаты" />
+          <Input value={roomCode} onChange={(e) => { setRoomCode(e.target.value) }} placeholder="Введите код комнаты" />
 
           {/* <Button onClick={() => navigate("/qr-scan")} className="p-0 aspect-square rounded-[20px]" variant={"secondary"}>
             <QrCode height={30} width={30} color="white"/>
