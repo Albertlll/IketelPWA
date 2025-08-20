@@ -1,6 +1,6 @@
 import SocketService from '@/shared/api/sockets';
 import { create } from 'zustand'
-import type { QuizTask, RawTask, SentenceTask, Task } from '../types/types';
+import type { Task } from '../types/types';
 
 interface AdventureState {
   joinCode: string;
