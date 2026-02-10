@@ -1,5 +1,6 @@
 import { useAdventureStore } from "@/feature/adventure";
 import { transformRawToTasks } from "@/feature/adventure/lib/transformRawToTasks";
+import type { RawTask } from "@/feature/adventure/types/types";
 import SocketService from "@/shared/api/sockets";
 import { useNavigate } from "react-router";
 
@@ -11,12 +12,28 @@ export const useRoom = () => {
   const enterToRoom = async (roomCode: string, nickname: string) => {
     await socket.connect();
 
+    let isResolved = false;
     const handleGameStarted = (steps: unknown) => {
-      setSteps(transformRawToTasks(steps));
+      console.log(steps)
+      if (!Array.isArray(steps)) {
+        rejectPromise("Некорректный формат шагов");
+        cleanupJoinListeners();
+        socket.off("game_started", handleGameStarted);
+        return;
+      }
+      setSteps(transformRawToTasks(steps as RawTask[]));
+      cleanupJoinListeners();
+      socket.off("game_started", handleGameStarted);
+      if (!isResolved) {
+        isResolved = true;
+        resolvePromise("started");
+      }
+
+      console.log("csdcsdc")
       navigate("/adventure");
     };
 
-    let resolvePromise: () => void = () => {};
+    let resolvePromise: (value: "lobby" | "started") => void = () => {};
     let rejectPromise: (reason?: unknown) => void = () => {};
 
     const extractErrorText = (payload: unknown) => {
@@ -33,22 +50,25 @@ export const useRoom = () => {
     };
 
     function onStudentJoined() {
-      cleanupListeners();
-      resolvePromise();
+      cleanupJoinListeners();
+      if (!isResolved) {
+        isResolved = true;
+        resolvePromise("lobby");
+      }
     }
 
     function onJoinError(error: unknown) {
-      cleanupListeners();
+      cleanupJoinListeners();
+      socket.off("game_started", handleGameStarted);
       rejectPromise(extractErrorText(error));
     }
 
-    function cleanupListeners() {
+    function cleanupJoinListeners() {
       socket.off("student_joined", onStudentJoined);
       socket.off("join_error", onJoinError);
-      socket.off("game_started", handleGameStarted);
     }
 
-    const joinPromise = new Promise<void>((resolve, reject) => {
+    const joinPromise = new Promise<"lobby" | "started">((resolve, reject) => {
       resolvePromise = resolve;
       rejectPromise = reject;
 

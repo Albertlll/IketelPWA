@@ -18,16 +18,17 @@ function HomePage() {
   const [roomCode, setRoomCode] = useState<string>(scannedCode);
   const [username, setUsername] = useState<string>("");
 
-
   const enterToRoom = useRoom()
 
   const enterRoom = () => {
     setJoinError(null);
     setIsEnterLoading(true)
     enterToRoom(roomCode, username)
-      .then(() => {
+      .then((result) => {
         setIsEnterLoading(false);
-        navigate("/lobby");
+        if (result === "lobby") {
+          navigate("/lobby");
+        }
       })
       .catch((err) => {
         setIsEnterLoading(false);
