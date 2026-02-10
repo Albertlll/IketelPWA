@@ -1,4 +1,3 @@
-
 import { io, Socket } from "socket.io-client";
 
 // const SOCKET_URL = "ws://localhost:8000";
@@ -19,8 +18,14 @@ class SocketService {
 	public connect() : Promise<string> {
     if (!this.socket) {
       console.log("Попытка подрубиться к сокету")
-      this.socket =io("https://iketel.ru", {
-				path: "/sio",
+			const socketUrl = import.meta.env.VITE_SOCKET_URL;
+			const socketPathValue = import.meta.env.VITE_SOCKET_PATH || "/sio";
+			const socketPath = socketPathValue.startsWith("/")
+				? socketPathValue
+				: `/${socketPathValue}`;
+
+      this.socket =io(socketUrl || window.location.origin, {
+				path: socketPath,
 				autoConnect: false,
 				withCredentials: true,
 				transports: ["websocket"],
@@ -45,6 +50,14 @@ class SocketService {
 
 	public on(event: string, callback: EventCallback): void {
     this.socket?.on(event, callback);
+  }
+
+  public off(event: string, callback?: EventCallback): void {
+    if (callback) {
+      this.socket?.off(event, callback);
+    } else {
+      this.socket?.off(event);
+    }
   }
 
   public emit(event: string, data?: any): void {

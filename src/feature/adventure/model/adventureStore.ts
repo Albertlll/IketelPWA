@@ -7,6 +7,10 @@ interface AdventureState {
   nickname: string;
   isConnected: boolean;
   error: string | null;
+  isFinished: boolean;
+  score: number;
+  place: number | null;
+  totalPlayers: number;
 
   taskStartTime: number;
 
@@ -16,6 +20,8 @@ interface AdventureState {
   setError: (error: string | null) => void;
   setSteps: (steps: Task[]) => void;
   sendAnswer: (answer: number | string[]) => void;
+  setGameResult: (result: { score: number; place: number; total_players: number }) => void;
+  resetGame: () => void;
 
   tasks: Task[] | null;
   currentTaskNumber: number;
@@ -29,6 +35,10 @@ export const useAdventureStore = create<AdventureState>((set, get) => ({
   nickname: "",
   isConnected: false,
   error: null,
+  isFinished: false,
+  score: 0,
+  place: null,
+  totalPlayers: 0,
   currentTaskNumber: 0,
   tasks: null,
   currentTask: null,
@@ -38,6 +48,28 @@ export const useAdventureStore = create<AdventureState>((set, get) => ({
   setNickname: (name) => set({ nickname: name }),
   setConnected: (value) => set({ isConnected: value }),
   setError: (error) => set({ error }),
+  setGameResult: (result) =>
+    set({
+      isFinished: true,
+      score: result.score,
+      place: result.place,
+      totalPlayers: result.total_players,
+    }),
+  resetGame: () =>
+    set({
+      joinCode: "",
+      nickname: "",
+      isConnected: false,
+      error: null,
+      isFinished: false,
+      score: 0,
+      place: null,
+      totalPlayers: 0,
+      currentTaskNumber: 0,
+      tasks: null,
+      currentTask: null,
+      taskStartTime: 0,
+    }),
 
   setSteps: (steps) => {
     console.log(steps);
@@ -47,6 +79,7 @@ export const useAdventureStore = create<AdventureState>((set, get) => ({
       currentTask: steps[0],
       taskStartTime: Date.now(),
       currentTaskNumber: 0,
+      isFinished: false,
     });
   },
 

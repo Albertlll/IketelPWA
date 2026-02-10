@@ -1,7 +1,13 @@
 FROM node:23-alpine AS builder
+ARG VITE_API_URL
+ARG VITE_SOCKET_URL
+ARG VITE_SOCKET_PATH
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_SOCKET_URL=$VITE_SOCKET_URL
+ENV VITE_SOCKET_PATH=$VITE_SOCKET_PATH
 WORKDIR /app
-COPY package.json .
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY . .
 RUN npm run build
 
